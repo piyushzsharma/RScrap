@@ -1,226 +1,120 @@
 <div align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=FF4500&height=200&section=header&text=Reddit%20Scraper&fontSize=70&fontColor=ffffff" alt="Project Banner" width="100%" />
 
-# 🤖 Reddit Scraper
+  # 🚀 Reddit Scraper & Data Pipeline
 
-<img src="./images/logo.png" alt="Project Logo" width="420"/>
+  **A highly modular, asynchronous framework for extracting rich, structured data from Reddit.**  
+  *Built for Researchers, Data Scientists, and AI Engineers.*
 
-**Modular Reddit data collection framework**  
-Scrape subreddits, posts, and users into clean structured JSON.
-
-![Python](https://img.shields.io/badge/Python-3.9+-blue?logo=python)
-![Data](https://img.shields.io/badge/Output-JSON-green)
-![Database](https://img.shields.io/badge/MongoDB-supported-47A248?logo=mongodb&logoColor=white)
-![License](https://img.shields.io/github/license/glowfi/reddit-scraper)
+  [![Python](https://img.shields.io/badge/Python-3.9+-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+  [![Output](https://img.shields.io/badge/Output-JSON%20%7C%20Parquet-green?style=for-the-badge&logo=json&logoColor=white)]()
+  [![Database](https://img.shields.io/badge/Database-MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)]()
+  [![License](https://img.shields.io/badge/License-GPL_3.0-lightgrey?style=for-the-badge)]()
 
 </div>
 
 ---
 
-## ✨ Overview
+## ✨ Why Use This Scraper?
 
-A modular Reddit scraping pipeline designed for **data collection, analytics, and research workflows**.
+Tired of messy, unformatted web scraping? This pipeline leverages `asyncpraw` to seamlessly navigate Reddit's API, outputting **pristine, hierarchical JSON datasets** ready for immediate use in machine learning pipelines, LLM training, or academic research.
 
-The project gathers structured data about:
-
-- 📚 **Subreddits**
-- 📝 **Posts**
-- 👤 **Users**
-
-and exports everything as **clean JSON datasets** ready for:
-
-- databases
-- machine learning pipelines
-- analytics
-- data exploration
-
-No manual scraping steps required.
+- ⚡ **Asynchronous by Default:** Maximizes I/O efficiency for continuous, high-speed data extraction.
+- 🌳 **Hierarchical Comment Trees:** Flawlessly preserves nested replies, keeping conversational context intact.
+- 📊 **Rich Metadata:** Captures upvotes, awards, flairs, timestamps, and deep media links (images/videos).
+- 🛠️ **Plug-and-Play Architecture:** Easily extendable for custom data transformations or database integrations.
 
 ---
 
-## 🚀 Features
+## 🏗️ Architecture & Workflow
 
-- Modular scraper architecture
-- Structured JSON output
-- Automated scraping workflow
-- MongoDB import helpers
-- Large dataset handling utilities
-- Environment-based configuration
+The framework operates on a modular pipeline, ensuring each component runs independently:
 
-### Collects
-
-| Entity     | Data                        |
-| ---------- | --------------------------- |
-| Subreddits | metadata & statistics       |
-| Posts      | content, scores, engagement |
-| Users      | profile & activity info     |
-
----
-
-## 🧠 How It Works
-
+```mermaid
+graph LR
+    A[run.py] --> B(subreddits.py)
+    A --> C(posts.py)
+    A --> D(users.py)
+    B --> E[(JSON Datasets)]
+    C --> E
+    D --> E
+    E --> F[MongoDB / Data Pipeline]
 ```
 
-run.py
-│
-├── subreddits.py
-├── posts.py
-└── users.py
-↓
-JSON datasets
-↓
-(optional) MongoDB import
-
-```
-
-Each scraper is independent and reusable.
-
 ---
 
-## 📦 Installation
+## 📦 Quick Start Guide
 
-### 1️⃣ Clone & setup environment
+### 1. Installation
+
+Clone the repository and spin up a virtual environment:
 
 ```bash
-git clone https://github.com/glowfi/reddit-scraper
+git clone https://github.com/glowfi/reddit-scraper.git
 cd reddit-scraper
 
+# Create and activate virtual environment
 python -m venv env
 source env/bin/activate      # Linux / macOS
 # env\Scripts\activate       # Windows
 
+# Install dependencies
 pip install -r requirements.txt
 ```
 
----
+### 2. Configuration
 
-### 2️⃣ Configure API credentials
+Rename `env-sample` to `.env` and configure your API credentials. 
 
-Edit `env-sample` and rename it:
+> [!TIP]
+> **Need API Keys?** Head over to [Reddit App Preferences](https://www.reddit.com/prefs/apps) to register a "Script" application and generate your Client ID and Secret.
 
-```
-.env
-```
-
-```env
-username=<RedditUsername>
-password=<RedditPassword>
-client_id=<ClientID>
-client_secret=<ClientSecret>
+```ini
+username=your_reddit_username
+password=your_reddit_password
+client_id=your_client_id
+client_secret=your_client_secret
 
 TOTAL_SUBREDDITS_PER_TOPICS=6
-SUBREDDIT_SORT_FILTER="hot"
+SUBREDDIT_SORT_FILTER=hot
 POSTS_PER_SUBREDDIT=10
-POSTS_SORT_FILTER="new"
+POSTS_SORT_FILTER=new
 ```
 
-Create Reddit API credentials here:
+### 3. Execute Pipeline
 
-👉 [https://www.reddit.com/prefs/apps](https://www.reddit.com/prefs/apps)
-
----
-
-### 3️⃣ Run scraper
+Fire up the scraper and watch the data flow!
 
 ```bash
 python run.py
 ```
 
-Pipeline execution:
+---
 
-1. Scrape subreddits
-2. Scrape posts
-3. Scrape users
-4. Export JSON datasets
-5. Optional dataset splitting
+## 🗂️ Data Extraction Scope
+
+| 📌 Entity | 📝 Extracted Data Points |
+| :--- | :--- |
+| **Subreddits** | Subscriber counts, active users, descriptions, creation dates, community rules. |
+| **Posts** | Titles, body text, upvote ratios, author flairs, media URLs (video/image), spoiler tags. |
+| **Comments** | Full conversational trees, nested replies, scores, awards, author profiles. |
+| **Users** | Account age, karma breakdowns, trophy lists, recent activity. |
 
 ---
 
-## 📊 Output Examples
+## 🛠️ Advanced Utilities
 
-> JSON files are large (16–25MB). Download instead of viewing in browser.
+This repository comes bundled with scripts to manage large-scale data post-extraction:
 
-### Subreddit Document
+- `utils/split.py`: Seamlessly partition massive JSON files (16MB+) into manageable chunks.
+- `utils/import_data_to_mongodb.sh`: Bulk import your freshly scraped JSON directly into a local MongoDB cluster.
 
-![Subreddit example](./images/subreddits.png)
-
-Sample:
-[https://files.catbox.moe/r7a7um.json](https://files.catbox.moe/r7a7um.json)
-
----
-
-### Post Document
-
-![Post example](./images/posts.png)
-
-Sample:
-[https://files.catbox.moe/5cf2xw.json](https://files.catbox.moe/5cf2xw.json)
+> [!WARNING]
+> **Rate Limits:** This scraper respects Reddit's official API limits (100 requests / min). Do not attempt to bypass these delays, or your API access may be permanently revoked.
 
 ---
 
-### User Document
-
-![User example](./images/users.png)
-
-Sample:
-[https://files.catbox.moe/yp506n.json](https://files.catbox.moe/yp506n.json)
-
----
-
-## 🗂️ Project Structure
-
-```
-reddit-scraper/
-├── subreddits.py
-├── posts.py
-├── users.py
-├── run.py
-├── utils/
-│   ├── split.py
-│   └── import_data_to_mongodb.sh
-└── output/
-```
-
----
-
-## 🧩 Utilities
-
-| Tool                        | Purpose                         |
-| --------------------------- | ------------------------------- |
-| `run.py`                    | Executes full scraping pipeline |
-| `utils/split.py`            | Splits large JSON datasets      |
-| `import_data_to_mongodb.sh` | Bulk imports into MongoDB       |
-
----
-
-## 🗄️ MongoDB Import
-
-After scraping:
-
-```bash
-./utils/import_data_to_mongodb.sh
-```
-
-Ensure MongoDB is running beforehand.
-
----
-
-## ⚠️ Notes
-
-- Reddit API rate limits apply
-- Scraping speed depends on network/API limits
-- Designed for research & data workflows
-- Respect Reddit API terms of service
-
----
-
-## 🤝 Contributing
-
-Contributions, improvements, and issue reports are welcome.
-
-Small focused PRs are preferred.
-
----
-
-## 📄 License
-
-GPL-3.0
+<div align="center">
+  <i>Contributions and PRs are always welcome!</i><br>
+  <b>License: GPL-3.0</b>
+</div>
